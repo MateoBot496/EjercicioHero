@@ -9,11 +9,34 @@ import {
   NavbarBrand,
 } from "@heroui/navbar";
 import { Link } from "react-router-dom";
+import { useCallback, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "@heroui/button";
 
+import { Post } from "@/interfaces/postInterfaces";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon } from "@/components/icons";
 
-export const Navbar = ({ search, setSearch }: any) => {
+export const Navbar = () => {
+  const [search, setSearch] = useState("");
+  const qc = useQueryClient();
+
+  const filtrar = useCallback(
+    (id: any) => {
+      qc.setQueryData(["infinite"], (oldData: any) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page: Post[]) =>
+            page.filter((post: Post) => post.id == id),
+          ),
+        };
+      });
+    },
+    [search],
+  );
+
   const searchInput = (
     <Input
       aria-label="Search"
@@ -63,6 +86,13 @@ export const Navbar = ({ search, setSearch }: any) => {
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
         <NavbarItem className="hidden md:flex" />
+        {search ? (
+          <NavbarItem className="hidden lg:flex">
+            <Button onClick={() => filtrar(search)}>Filtrar</Button>
+          </NavbarItem>
+        ) : (
+          ""
+        )}
       </NavbarContent>
 
       <NavbarMenu className="flex flex-col items-center">
