@@ -1,8 +1,4 @@
-import { Link } from "@heroui/link";
-
 import { Navbar } from "@/components/navbar";
-import { useState } from "react";
-
 export default function DefaultLayout({
   children,
 }: {
@@ -14,7 +10,7 @@ export default function DefaultLayout({
       <main className="container mx-auto max-w-7xl px-6 flex-grow pt-16 pb-16">
         {children}
       </main>
-      <footer className="w-full flex items-center justify-center py-3 border-2 rounded-xl">
+      <footer className="w-full flex items-center justify-center py-3 shadow-xl bg-black text-white">
         Mi footer
       </footer>
     </div>

@@ -9,33 +9,20 @@ import {
   NavbarBrand,
 } from "@heroui/navbar";
 import { Link } from "react-router-dom";
-import { useCallback, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { Button } from "@heroui/button";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
-import { Post } from "@/interfaces/postInterfaces";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon } from "@/components/icons";
+import { setFilter } from "@/store/filterSlice";
 
 export const Navbar = () => {
   const [search, setSearch] = useState("");
-  const qc = useQueryClient();
+  const dispatch = useDispatch();
 
-  const filtrar = useCallback(
-    (id: any) => {
-      qc.setQueryData(["infinite"], (oldData: any) => {
-        if (!oldData) return oldData;
-
-        return {
-          ...oldData,
-          pages: oldData.pages.map((page: Post[]) =>
-            page.filter((post: Post) => post.id == id),
-          ),
-        };
-      });
-    },
-    [search],
-  );
+  useEffect(() => {
+    dispatch(setFilter(search));
+  }, [search]);
 
   const searchInput = (
     <Input
@@ -45,7 +32,7 @@ export const Navbar = () => {
         input: "text-sm",
       }}
       labelPlacement="outside"
-      placeholder="Busqueda por post id"
+      placeholder="Busqueda de post..."
       startContent={
         <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
       }
@@ -57,13 +44,12 @@ export const Navbar = () => {
     />
   );
 
-  const miMenu = ["Enlace 1", "Enlace 2", "Enlace 3"];
+  const miMenu = ["Docs", "About", "Contact us"];
 
   return (
     <HeroUINavbar
       shouldHideOnScroll
-      className="w-full border-2 rounded-xl"
-      disableAnimation={true}
+      className="w-full bg-black-200 flex justify-center items-center shadow-xl"
       maxWidth="xl"
     >
       <NavbarBrand>
@@ -71,39 +57,29 @@ export const Navbar = () => {
           <p className="font-bold text-inherit">LOGO DE PRUEBA</p>
         </Link>
       </NavbarBrand>
-      <NavbarContent className="hidden sm:flex">
-        {miMenu.map((i, id) => (
-          <NavbarMenuItem key={id}>{i}</NavbarMenuItem>
-        ))}
-      </NavbarContent>
 
       <NavbarContent
         className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
+        justify="center"
       >
-        <NavbarItem className="hidden sm:flex gap-2">
-          <ThemeSwitch />
-        </NavbarItem>
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-        <NavbarItem className="hidden md:flex" />
-        {search ? (
-          <NavbarItem className="hidden lg:flex">
-            <Button onClick={() => filtrar(search)}>Filtrar</Button>
-          </NavbarItem>
-        ) : (
-          ""
-        )}
+        <NavbarItem className="hidden lg:flex" />
       </NavbarContent>
 
-      <NavbarMenu className="flex flex-col items-center">
+      <NavbarMenu className="flex flex-col items-center mt-10 max-h-[20dvh]">
         {miMenu.map((i, id) => (
           <NavbarMenuItem key={id}>
-            <Link to="/docs">{i}</Link>
+            <Link
+              className="hover:text-red-200 hover:text-subtitled"
+              to="/docs"
+            >
+              {i}
+            </Link>
           </NavbarMenuItem>
         ))}
       </NavbarMenu>
 
-      <NavbarContent className="sm:hidden" justify="end">
+      <NavbarContent justify="end">
         <ThemeSwitch />
         <NavbarMenuToggle />
       </NavbarContent>
