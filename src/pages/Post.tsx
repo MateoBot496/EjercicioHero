@@ -29,6 +29,7 @@ export default function Post() {
                         className="object-cover rounded-sm"
                         src="https://heroui.com/images/album-cover.png"
                         width="100%"
+                        loading="lazy"
                         />
                     
                     <div className="bg-gray-200 p-2 rounded-sm flex flex-col  items-center">
