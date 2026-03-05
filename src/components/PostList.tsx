@@ -1,34 +1,82 @@
 /* eslint-disable prettier/prettier */
+import type {ColDef} from "ag-grid-community";
+
 import { Button } from "@heroui/button";
 import { useEffect, useMemo, useState } from "react";
-import { useSelector} from "react-redux";
 import {Pagination} from "@heroui/pagination"
 import {Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@heroui/modal";
 import { useDisclosure } from "@heroui/modal";
 import { Input } from "@heroui/input";
 import {Form} from "@heroui/form"
+import { Spinner } from "@heroui/spinner";
+import { AgGridReact } from "ag-grid-react";
 
 import PostCard from "./PostCard";
 
 import useCreatePost from "@/hooks/useCreatePost";
 import useGetInfiniteQuery from "@/hooks/useGetInfiniteQuery";
 import useGetPosts from "@/hooks/useGetPosts";
-
+import { zustandStore } from "@/store/zustandStore";
+import { Post } from "@/interfaces/postInterfaces";
 
 export default function PostList() {
     const [currentPage, setCurrentPage] = useState(1);
+    const filter = zustandStore((state) => state.filter)
     const { mutate } = useCreatePost();
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
-    const { isFetchNextPageError, isFetchingNextPage, data, fetchNextPage } = useGetInfiniteQuery();
+    const { isFetchNextPageError, isFetchingNextPage, data, fetchNextPage, hasNextPage } = useGetInfiniteQuery();
     const {data: todos} = useGetPosts();
-    const filter = useSelector((state:any) => state.filter.value)
+ 
+    type colDefType = {
+        
+    }
+
+    const filterOptions = useMemo(() => {
+        return(
+            {filter: true,
+  floatingFilter: true,
+  sortable: true,
+  resizable: true,}
+        )
+    },[])
+    const [colDefs, setColDefs] = useState<ColDef<Post>[]>([
+        { field: "id", flex:1 ,        headerCheckboxSelection: true,         checkboxSelection: true, editable: true, },
+        { field: "title", flex:3 },
+        { field: "body", flex:6 },
+        {
+    headerName: "Acciones",
+    flex: 2,
+    autoHeight: true,
+    cellRenderer: (params: any) => {
+      return (
+        <Button
+          onClick={() => console.log(params.data.id)}
+          className="text-white w-full my-3 font-bold"
+          color="warning"
+        >
+          Eliminar
+        </Button>
+      )}},
+    ])
+
+    //const filter = useSelector((state:any) => state.filter.value)
+
+    //IDEA  
+    let LIMIT = 10
+
+    const totalPagesForPagination = hasNextPage && currentPage==LIMIT ? LIMIT += 1 : LIMIT;
 
     const posts = useMemo(() => {
         if (!data) return [];
 
-
         return data.pages[currentPage - 1];
-        }, [data, currentPage]);
+    }, [data, currentPage]);
+    
+    useEffect(() => {
+        if(posts?.length === 0  && currentPage > 1){
+            setCurrentPage(currentPage-1);
+        }
+    },[posts])
 
 
     const filteredPosts = useMemo(() => {
@@ -70,7 +118,7 @@ export default function PostList() {
     }, [currentPage, data])
 
   if (isFetchNextPageError) return <p>Error al cargar posts</p>;
-  if (isFetchingNextPage) return <p>Cargando...</p>;
+  if (isFetchingNextPage) return <div className="w-full h-screen flex justify-center items-center"> <Spinner size="lg" /> </div>;
 
 
   return (
@@ -137,9 +185,12 @@ export default function PostList() {
                 )}
             </ModalContent>
         </Modal>
+        <div className=" w-full h-auto rounded-xl border-1">
+            
+            <AgGridReact columnDefs={colDefs} rowData={filteredPosts} defaultColDef={filterOptions} domLayout="autoHeight" rowSelection={"multiple"} onCellValueChanged={event => console.log(`New Cell Value: ${event}`)}/>
+        </div>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3">
                 
-            
             
             { filteredPosts?.map((post) => (
                         
@@ -153,7 +204,7 @@ export default function PostList() {
 
         </div>
         
-        <Pagination className="w-full flex flex-row items-center justify-center" initialPage={1} page={currentPage} total={10} onChange={setCurrentPage}  />
+        <Pagination className="w-full flex flex-row items-center justify-center" initialPage={1} page={currentPage} total={totalPagesForPagination} onChange={setCurrentPage}  />
     </div>
 
   );

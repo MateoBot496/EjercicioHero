@@ -27,9 +27,9 @@ export default function Post() {
                     <img
                         alt="Album cover"
                         className="object-cover rounded-sm"
+                        loading="lazy"
                         src="https://heroui.com/images/album-cover.png"
                         width="100%"
-                        loading="lazy"
                         />
                     
                     <div className="bg-gray-200 p-2 rounded-sm flex flex-col  items-center">
@@ -43,7 +43,7 @@ export default function Post() {
                 </CardBody>
                 <Divider />
                 <CardFooter className="flex justify-center items-center text-center ">
-                    <Link to={"/"}>Volver a home</Link>
+                    <Link to={"/"} className="transition ease-in-out duration-300 hover:text-blue-700 hover:font-bold ">Volver a home</Link>
                 </CardFooter>
             </Card>
         )}

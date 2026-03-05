@@ -28,20 +28,22 @@ export default function useCreatePost() {
   const queryClient = useQueryClient();
 
   return useMutation <Post, Error, payloadType>({
+    
     mutationFn: (payload: payloadType) => query(payload),
-    onSuccess: (result) => {
-  queryClient.setQueryData<InfiniteData<Post[]>>(
-    ["infinite"],
-    (oldData) => {
-      if (!oldData) return oldData;
 
-      return {
-        ...oldData,
-        pages: [
-          [result, ...oldData.pages[0]], 
-          ...oldData.pages.slice(1),
-        ],
-      };
+    onSuccess: (result) => {
+      queryClient.setQueryData<InfiniteData<Post[]>>(
+        ["infinite"],
+        (oldData) => {
+          if (!oldData) return oldData;
+
+          return {
+            ...oldData,
+            pages: [
+              [result, ...oldData.pages[0]], 
+              ...oldData.pages.slice(1),
+            ],
+          };
     }
   );
 },

@@ -9,20 +9,13 @@ import {
   NavbarBrand,
 } from "@heroui/navbar";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon } from "@/components/icons";
-import { setFilter } from "@/store/filterSlice";
+import { zustandStore } from "@/store/zustandStore";
 
 export const Navbar = () => {
-  const [search, setSearch] = useState("");
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setFilter(search));
-  }, [search]);
+  const { filter, setFilter } = zustandStore();
 
   const searchInput = (
     <Input
@@ -37,9 +30,9 @@ export const Navbar = () => {
         <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
       }
       type="search"
-      value={search}
+      value={filter}
       onChange={(e) => {
-        setSearch(e.target.value);
+        setFilter(e.target.value);
       }}
     />
   );
@@ -52,7 +45,7 @@ export const Navbar = () => {
       className="w-full bg-black-200 flex justify-center items-center shadow-xl"
       maxWidth="xl"
     >
-      <NavbarBrand>
+      <NavbarBrand> 
         <Link to="/">
           <p className="font-bold text-inherit">LOGO DE PRUEBA</p>
         </Link>

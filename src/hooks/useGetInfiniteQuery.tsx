@@ -24,7 +24,7 @@ export default function useGetInfiniteQuery() {
     queryFn: ({ pageParam = 0}: any) => infiniteFetch(pageParam),
     getNextPageParam: (lastPage, allPages) => {
         
-      if (lastPage.length == 0) return undefined;
+      if (lastPage.length < 10) return undefined;
 
       return allPages.length * 10; 
     },
