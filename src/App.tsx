@@ -1,33 +1,26 @@
-import { Route, Routes } from "react-router-dom";
-import { AllCommunityModule } from "ag-grid-community";
-import { AgGridProvider } from "ag-grid-react";
-
-import DefaultLayout from "./layouts/default";
-
-import IndexPage from "@/pages/index";
-import DocsPage from "@/pages/docs";
-import PricingPage from "@/pages/pricing";
-import BlogPage from "@/pages/blog";
-import AboutPage from "@/pages/about";
-import Post from "@/pages/Post";
-
-const modules = [AllCommunityModule];
-
+import './App.css'
+import DefaultLayout from './layout/layout'
+import MainHero from './components/MainHero'
+import ContainerBorder from './components/containerBorder'
+import TarjetaPrecios from './components/tarjetaPrecios'
 function App() {
+  
+  
+
   return (
-    <AgGridProvider modules={modules}>
-      <DefaultLayout>
-        <Routes>
-          <Route element={<IndexPage />} path="/" />
-          <Route element={<DocsPage />} path="/docs" />
-          <Route element={<PricingPage />} path="/pricing" />
-          <Route element={<BlogPage />} path="/blog" />
-          <Route element={<AboutPage />} path="/about" />
-          <Route element={<Post />} path="/posts/:id" />
-        </Routes>
-      </DefaultLayout>
-    </AgGridProvider>
-  );
+    <DefaultLayout>
+      <MainHero></MainHero>
+      <ContainerBorder></ContainerBorder>
+      <div className='flex flex-col xl:flex-row gap-5 my-30'>
+        
+      <TarjetaPrecios titulo='Esencial' />
+      <TarjetaPrecios titulo='Profesional' />
+      <TarjetaPrecios titulo='Empresa' />
+      </div>
+    
+
+    </DefaultLayout>
+  )
 }
 
-export default App;
+export default App

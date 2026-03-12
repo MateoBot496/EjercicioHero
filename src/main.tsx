@@ -1,23 +1,15 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './App.css'
+import App from './App.tsx'
+import { PrimeReactProvider } from 'primereact/api'
 
-import App from "./App.tsx";
-import { Provider } from "./provider.tsx";
+createRoot(document.getElementById('root')!).render(
+  <PrimeReactProvider value={{unstyled: true}}>
 
-import "@/styles/globals.css";
+    <StrictMode>
+      <App />
+    </StrictMode>
 
-const queryClient = new QueryClient();
-
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <QueryClientProvider client={queryClient}>
-    <React.StrictMode>
-      <BrowserRouter>
-        <Provider>
-          <App />
-        </Provider>
-      </BrowserRouter>
-    </React.StrictMode>
-  </QueryClientProvider>,
-);
+  </PrimeReactProvider>
+)

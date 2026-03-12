@@ -1,10 +1,9 @@
-/* eslint-disable prettier/prettier */
-import { configureStore } from "@reduxjs/toolkit";
+import { create } from "zustand";
 
-import filterReducer from "./filterSlice";
+const useStore = create<any>((set) => ({
+  modal1: false,
+  setModal1: (value: boolean) => set({ modal1: value }), 
+  toggleModal1: () => set((state: { modal1: boolean; }) => ({ modal1: !state.modal1 })), 
+}));
 
-export const store = configureStore({
-  reducer: {
-    filter: filterReducer,
-  },
-});
+export default useStore;
